@@ -15,6 +15,11 @@ import {
 export type AssetStatus = 'Available' | 'Assigned' | 'In Maintenance' | 'Retired';
 export type AssetCondition = 'Excellent' | 'Good' | 'Fair' | 'Poor';
 
+export interface AssetSpec {
+  label: string;
+  value: string;
+}
+
 export interface Asset {
   id: string;
   code: string;
@@ -33,6 +38,7 @@ export interface Asset {
   vendor: string;
   serialNumber: string;
   icon: LucideIcon;
+  specs: AssetSpec[];
 }
 
 export interface Employee {
@@ -147,21 +153,156 @@ const iconMap = {
 };
 
 export const assets: Asset[] = [
-  { id: 'a1', code: 'AST-0001', name: 'MacBook Pro 16" M3', category: 'IT Hardware', type: 'Laptop', status: 'Assigned', condition: 'Excellent', location: 'HQ - Floor 4', department: 'Engineering', assignedTo: 'Sarah Chen', purchaseDate: '2024-01-15', purchaseCost: 3299, currentValue: 2800, warrantyExpiry: '2027-01-15', vendor: 'Apple Inc.', serialNumber: 'C02XK1ABJGH', icon: Laptop },
-  { id: 'a2', code: 'AST-0002', name: 'Dell UltraSharp 32" Monitor', category: 'IT Hardware', type: 'Monitor', status: 'Assigned', condition: 'Good', location: 'HQ - Floor 4', department: 'Engineering', assignedTo: 'Sarah Chen', purchaseDate: '2024-01-15', purchaseCost: 899, currentValue: 720, warrantyExpiry: '2027-01-15', vendor: 'Dell Technologies', serialNumber: 'DL3209UHG', icon: Monitor },
-  { id: 'a3', code: 'AST-0003', name: 'iPhone 15 Pro', category: 'Mobile', type: 'Smartphone', status: 'Assigned', condition: 'Excellent', location: 'HQ - Floor 2', department: 'Sales', assignedTo: 'Marcus Johnson', purchaseDate: '2024-03-22', purchaseCost: 1199, currentValue: 1050, warrantyExpiry: '2026-03-22', vendor: 'Apple Inc.', serialNumber: 'IP15P0982', icon: Smartphone },
-  { id: 'a4', code: 'AST-0004', name: 'HP LaserJet Pro M404', category: 'Office Equipment', type: 'Printer', status: 'Available', condition: 'Good', location: 'Branch - Boston', department: 'Operations', assignedTo: null, purchaseDate: '2023-06-10', purchaseCost: 329, currentValue: 210, warrantyExpiry: '2025-06-10', vendor: 'HP Inc.', serialNumber: 'HPLJ404X1', icon: Printer },
-  { id: 'a5', code: 'AST-0005', name: 'Dell PowerEdge R750', category: 'Infrastructure', type: 'Server', status: 'In Maintenance', condition: 'Fair', location: 'Data Center East', department: 'IT Operations', assignedTo: null, purchaseDate: '2022-11-05', purchaseCost: 8500, currentValue: 5100, warrantyExpiry: '2025-11-05', vendor: 'Dell Technologies', serialNumber: 'PER750X22', icon: Server },
-  { id: 'a6', code: 'AST-0006', name: 'iPad Pro 12.9"', category: 'Mobile', type: 'Tablet', status: 'Assigned', condition: 'Excellent', location: 'HQ - Floor 3', department: 'Design', assignedTo: 'Priya Patel', purchaseDate: '2024-05-18', purchaseCost: 1299, currentValue: 1150, warrantyExpiry: '2026-05-18', vendor: 'Apple Inc.', serialNumber: 'IPP129021', icon: Tablet },
-  { id: 'a7', code: 'AST-0007', name: 'Cisco Catalyst 9300', category: 'Infrastructure', type: 'Router', status: 'Assigned', condition: 'Good', location: 'Data Center East', department: 'IT Operations', assignedTo: 'David Kim', purchaseDate: '2023-02-28', purchaseCost: 4200, currentValue: 3100, warrantyExpiry: '2026-02-28', vendor: 'Cisco Systems', serialNumber: 'CSC930017', icon: Router },
-  { id: 'a8', code: 'AST-0008', name: 'Sony A7 IV Camera', category: 'Media Equipment', type: 'Camera', status: 'Available', condition: 'Excellent', location: 'HQ - Floor 1', department: 'Marketing', assignedTo: null, purchaseDate: '2024-02-12', purchaseCost: 2499, currentValue: 2200, warrantyExpiry: '2026-02-12', vendor: 'Sony Electronics', serialNumber: 'SNYA7IV08', icon: Camera },
-  { id: 'a9', code: 'AST-0009', name: 'Epson PowerLite Projector', category: 'Office Equipment', type: 'Projector', status: 'Assigned', condition: 'Fair', location: 'HQ - Floor 1', department: 'Operations', assignedTo: 'Conference Room A', purchaseDate: '2022-08-20', purchaseCost: 899, currentValue: 450, warrantyExpiry: '2024-08-20', vendor: 'Epson America', serialNumber: 'EPPL0912', icon: Projector },
-  { id: 'a10', code: 'AST-0010', name: 'Bose Noise-Canceling Headphones', category: 'IT Hardware', type: 'Headphones', status: 'Assigned', condition: 'Good', location: 'Remote', department: 'Engineering', assignedTo: 'Elena Rodriguez', purchaseDate: '2024-04-03', purchaseCost: 379, currentValue: 320, warrantyExpiry: '2026-04-03', vendor: 'Bose Corporation', serialNumber: 'BSNC7005', icon: Headphones },
-  { id: 'a11', code: 'AST-0011', name: 'MacBook Air M2', category: 'IT Hardware', type: 'Laptop', status: 'Available', condition: 'Excellent', location: 'HQ - Floor 4', department: 'Engineering', assignedTo: null, purchaseDate: '2024-06-15', purchaseCost: 1199, currentValue: 1100, warrantyExpiry: '2027-06-15', vendor: 'Apple Inc.', serialNumber: 'C02MBA22J', icon: Laptop },
-  { id: 'a12', code: 'AST-0012', name: 'ThinkPad X1 Carbon Gen 11', category: 'IT Hardware', type: 'Laptop', status: 'Assigned', condition: 'Good', location: 'Branch - Austin', department: 'Finance', assignedTo: 'James Wilson', purchaseDate: '2023-09-12', purchaseCost: 1899, currentValue: 1200, warrantyExpiry: '2026-09-12', vendor: 'Lenovo', serialNumber: 'TPX1C11G', icon: Laptop },
-  { id: 'a13', code: 'AST-0013', name: 'Dell OptiPlex 7090', category: 'IT Hardware', type: 'Monitor', status: 'Retired', condition: 'Poor', location: 'Storage - Warehouse', department: 'Operations', assignedTo: null, purchaseDate: '2021-03-15', purchaseCost: 1099, currentValue: 0, warrantyExpiry: '2024-03-15', vendor: 'Dell Technologies', serialNumber: 'DLOP7090X', icon: Monitor },
-  { id: 'a14', code: 'AST-0014', name: 'Samsung Galaxy S23', category: 'Mobile', type: 'Smartphone', status: 'Assigned', condition: 'Good', location: 'Branch - Boston', department: 'Sales', assignedTo: 'Olivia Brown', purchaseDate: '2023-12-01', purchaseCost: 799, currentValue: 580, warrantyExpiry: '2025-12-01', vendor: 'Samsung Electronics', serialNumber: 'SGS2311X', icon: Smartphone },
-  { id: 'a15', code: 'AST-0015', name: 'Surface Pro 9', category: 'Mobile', type: 'Tablet', status: 'In Maintenance', condition: 'Fair', location: 'HQ - Floor 3', department: 'Design', assignedTo: null, purchaseDate: '2023-07-22', purchaseCost: 1599, currentValue: 980, warrantyExpiry: '2026-07-22', vendor: 'Microsoft', serialNumber: 'SP91599X', icon: Tablet },
+  { id: 'a1', code: 'AST-0001', name: 'MacBook Pro 16" M3', category: 'IT Hardware', type: 'Laptop', status: 'Assigned', condition: 'Excellent', location: 'HQ - Floor 4', department: 'Engineering', assignedTo: 'Sarah Chen', purchaseDate: '2024-01-15', purchaseCost: 3299, currentValue: 2800, warrantyExpiry: '2027-01-15', vendor: 'Apple Inc.', serialNumber: 'C02XK1ABJGH', icon: Laptop, specs: [
+    { label: 'CPU', value: 'Apple M3 Max 16-core' },
+    { label: 'Memory', value: '36 GB Unified' },
+    { label: 'Storage', value: '1 TB SSD' },
+    { label: 'Display', value: '16.2" Liquid Retina XDR' },
+    { label: 'GPU', value: '40-core GPU' },
+    { label: 'OS', value: 'macOS Sonoma 14.5' },
+    { label: 'Battery', value: '100 Wh · 22 cycles' },
+    { label: 'Ports', value: '3× Thunderbolt 4, HDMI, SDXC' },
+  ] },
+  { id: 'a2', code: 'AST-0002', name: 'Dell UltraSharp 32" Monitor', category: 'IT Hardware', type: 'Monitor', status: 'Assigned', condition: 'Good', location: 'HQ - Floor 4', department: 'Engineering', assignedTo: 'Sarah Chen', purchaseDate: '2024-01-15', purchaseCost: 899, currentValue: 720, warrantyExpiry: '2027-01-15', vendor: 'Dell Technologies', serialNumber: 'DL3209UHG', icon: Monitor, specs: [
+    { label: 'Screen Size', value: '32 inches' },
+    { label: 'Resolution', value: '3840 × 2160 (4K UHD)' },
+    { label: 'Panel Type', value: 'IPS Black' },
+    { label: 'Refresh Rate', value: '60 Hz' },
+    { label: 'Ports', value: '2× HDMI 2.0, 1× DisplayPort 1.4, USB-C 3.2' },
+    { label: 'Color Gamut', value: '100% sRGB, 98% DCI-P3' },
+    { label: 'Brightness', value: '400 nits' },
+    { label: 'Stand', value: 'Height-adjustable, tilt, swivel' },
+  ] },
+  { id: 'a3', code: 'AST-0003', name: 'iPhone 15 Pro', category: 'Mobile', type: 'Smartphone', status: 'Assigned', condition: 'Excellent', location: 'HQ - Floor 2', department: 'Sales', assignedTo: 'Marcus Johnson', purchaseDate: '2024-03-22', purchaseCost: 1199, currentValue: 1050, warrantyExpiry: '2026-03-22', vendor: 'Apple Inc.', serialNumber: 'IP15P0982', icon: Smartphone, specs: [
+    { label: 'Chip', value: 'Apple A17 Pro' },
+    { label: 'Memory', value: '8 GB' },
+    { label: 'Storage', value: '256 GB' },
+    { label: 'Display', value: '6.1" Super Retina XDR OLED' },
+    { label: 'Camera', value: '48 MP main + 12 MP ultrawide + 12 MP telephoto' },
+    { label: 'Battery', value: '3274 mAh · 282 cycles' },
+    { label: 'OS', value: 'iOS 17.5' },
+    { label: 'Connectivity', value: '5G, Wi-Fi 6E, Bluetooth 5.3' },
+  ] },
+  { id: 'a4', code: 'AST-0004', name: 'HP LaserJet Pro M404', category: 'Office Equipment', type: 'Printer', status: 'Available', condition: 'Good', location: 'Branch - Boston', department: 'Operations', assignedTo: null, purchaseDate: '2023-06-10', purchaseCost: 329, currentValue: 210, warrantyExpiry: '2025-06-10', vendor: 'HP Inc.', serialNumber: 'HPLJ404X1', icon: Printer, specs: [
+    { label: 'Print Speed', value: '40 ppm (black)' },
+    { label: 'Print Resolution', value: '1200 × 1200 dpi' },
+    { label: 'Paper Size', value: 'A4, Letter, Legal' },
+    { label: 'Duplex', value: 'Automatic' },
+    { label: 'Connectivity', value: 'USB 2.0, Ethernet, Wi-Fi' },
+    { label: 'Monthly Duty Cycle', value: '80,000 pages' },
+    { label: 'Toner', value: 'HP 142A Black · 9,500 pages' },
+    { label: 'Trays', value: '2 (250 + 100 sheets)' },
+  ] },
+  { id: 'a5', code: 'AST-0005', name: 'Dell PowerEdge R750', category: 'Infrastructure', type: 'Server', status: 'In Maintenance', condition: 'Fair', location: 'Data Center East', department: 'IT Operations', assignedTo: null, purchaseDate: '2022-11-05', purchaseCost: 8500, currentValue: 5100, warrantyExpiry: '2025-11-05', vendor: 'Dell Technologies', serialNumber: 'PER750X22', icon: Server, specs: [
+    { label: 'CPU', value: '2× Intel Xeon Gold 6338 (32-core)' },
+    { label: 'Memory', value: '256 GB DDR4 ECC' },
+    { label: 'Storage', value: '8× 2.4 TB SAS 10K RAID 10' },
+    { label: 'Network', value: '4× 10 GbE' },
+    { label: 'Power Supply', value: '2× 1100W redundant' },
+    { label: 'Form Factor', value: '2U Rack Server' },
+    { label: 'OS', value: 'VMware ESXi 8.0' },
+    { label: 'iDRAC', value: 'iDRAC9 Enterprise' },
+  ] },
+  { id: 'a6', code: 'AST-0006', name: 'iPad Pro 12.9"', category: 'Mobile', type: 'Tablet', status: 'Assigned', condition: 'Excellent', location: 'HQ - Floor 3', department: 'Design', assignedTo: 'Priya Patel', purchaseDate: '2024-05-18', purchaseCost: 1299, currentValue: 1150, warrantyExpiry: '2026-05-18', vendor: 'Apple Inc.', serialNumber: 'IPP129021', icon: Tablet, specs: [
+    { label: 'Chip', value: 'Apple M2' },
+    { label: 'Memory', value: '8 GB' },
+    { label: 'Storage', value: '256 GB' },
+    { label: 'Display', value: '12.9" Liquid Retina XDR' },
+    { label: 'Camera', value: '12 MP wide + 10 MP ultrawide' },
+    { label: 'Battery', value: '10758 mAh · 45 cycles' },
+    { label: 'OS', value: 'iPadOS 17.5' },
+    { label: 'Accessories', value: 'Apple Pencil 2, Magic Keyboard' },
+  ] },
+  { id: 'a7', code: 'AST-0007', name: 'Cisco Catalyst 9300', category: 'Infrastructure', type: 'Router', status: 'Assigned', condition: 'Good', location: 'Data Center East', department: 'IT Operations', assignedTo: 'David Kim', purchaseDate: '2023-02-28', purchaseCost: 4200, currentValue: 3100, warrantyExpiry: '2026-02-28', vendor: 'Cisco Systems', serialNumber: 'CSC930017', icon: Router, specs: [
+    { label: 'Model', value: 'C9300-48T' },
+    { label: 'Ports', value: '48× 1 GbE + 4× 10 GbE Uplink' },
+    { label: 'Switching Capacity', value: '128 Gbps' },
+    { label: 'Forwarding Rate', value: '95 Mpps' },
+    { label: 'PoE', value: 'PoE+ (30W per port)' },
+    { label: 'Stacking', value: 'StackWise-480' },
+    { label: 'OS', value: 'Cisco IOS XE 17.9' },
+    { label: 'Power', value: '2× 715W AC' },
+  ] },
+  { id: 'a8', code: 'AST-0008', name: 'Sony A7 IV Camera', category: 'Media Equipment', type: 'Camera', status: 'Available', condition: 'Excellent', location: 'HQ - Floor 1', department: 'Marketing', assignedTo: null, purchaseDate: '2024-02-12', purchaseCost: 2499, currentValue: 2200, warrantyExpiry: '2026-02-12', vendor: 'Sony Electronics', serialNumber: 'SNYA7IV08', icon: Camera, specs: [
+    { label: 'Sensor', value: '33 MP Full-frame CMOS' },
+    { label: 'Video', value: '4K 60p, 10-bit 4:2:2' },
+    { label: 'ISO Range', value: '100–51,200' },
+    { label: 'Autofocus', value: '759 phase-detection points' },
+    { label: 'Stabilization', value: '5-axis in-body (5.5 stops)' },
+    { label: 'Memory', value: '2× SD card slots (CFexpress Type A)' },
+    { label: 'Battery', value: 'NP-FZ100 · 580 shots' },
+    { label: 'Lens Kit', value: 'Sony 28-70mm f/3.5-5.6' },
+  ] },
+  { id: 'a9', code: 'AST-0009', name: 'Epson PowerLite Projector', category: 'Office Equipment', type: 'Projector', status: 'Assigned', condition: 'Fair', location: 'HQ - Floor 1', department: 'Operations', assignedTo: 'Conference Room A', purchaseDate: '2022-08-20', purchaseCost: 899, currentValue: 450, warrantyExpiry: '2024-08-20', vendor: 'Epson America', serialNumber: 'EPPL0912', icon: Projector, specs: [
+    { label: 'Brightness', value: '3,000 lumens' },
+    { label: 'Resolution', value: '1920 × 1080 (Full HD)' },
+    { label: 'Lamp Life', value: '6,000 hours (eco mode)' },
+    { label: 'Throw Ratio', value: '1.48–1.77:1' },
+    { label: 'Connectivity', value: '2× HDMI, USB, VGA, RJ-45' },
+    { label: 'Speaker', value: '16W built-in' },
+    { label: 'Lamp Hours Used', value: '4,200 hours' },
+    { label: 'Mount', value: 'Ceiling mount installed' },
+  ] },
+  { id: 'a10', code: 'AST-0010', name: 'Bose Noise-Canceling Headphones', category: 'IT Hardware', type: 'Headphones', status: 'Assigned', condition: 'Good', location: 'Remote', department: 'Engineering', assignedTo: 'Elena Rodriguez', purchaseDate: '2024-04-03', purchaseCost: 379, currentValue: 320, warrantyExpiry: '2026-04-03', vendor: 'Bose Corporation', serialNumber: 'BSNC7005', icon: Headphones, specs: [
+    { label: 'Model', value: 'QuietComfort Ultra' },
+    { label: 'Type', value: 'Over-ear, wireless' },
+    { label: 'Battery Life', value: '24 hours (ANC on)' },
+    { label: 'Noise Cancellation', value: 'Adaptive ANC' },
+    { label: 'Bluetooth', value: '5.3 with multipoint' },
+    { label: 'Codecs', value: 'SBC, AAC, aptX Adaptive' },
+    { label: 'Charging', value: 'USB-C' },
+    { label: 'Weight', value: '254 g' },
+  ] },
+  { id: 'a11', code: 'AST-0011', name: 'MacBook Air M2', category: 'IT Hardware', type: 'Laptop', status: 'Available', condition: 'Excellent', location: 'HQ - Floor 4', department: 'Engineering', assignedTo: null, purchaseDate: '2024-06-15', purchaseCost: 1199, currentValue: 1100, warrantyExpiry: '2027-06-15', vendor: 'Apple Inc.', serialNumber: 'C02MBA22J', icon: Laptop, specs: [
+    { label: 'CPU', value: 'Apple M2 8-core' },
+    { label: 'Memory', value: '16 GB Unified' },
+    { label: 'Storage', value: '512 GB SSD' },
+    { label: 'Display', value: '13.6" Liquid Retina' },
+    { label: 'GPU', value: '10-core GPU' },
+    { label: 'OS', value: 'macOS Sonoma 14.5' },
+    { label: 'Battery', value: '52.6 Wh · 14 cycles' },
+    { label: 'Ports', value: '2× Thunderbolt 3, MagSafe 3' },
+  ] },
+  { id: 'a12', code: 'AST-0012', name: 'ThinkPad X1 Carbon Gen 11', category: 'IT Hardware', type: 'Laptop', status: 'Assigned', condition: 'Good', location: 'Branch - Austin', department: 'Finance', assignedTo: 'James Wilson', purchaseDate: '2023-09-12', purchaseCost: 1899, currentValue: 1200, warrantyExpiry: '2026-09-12', vendor: 'Lenovo', serialNumber: 'TPX1C11G', icon: Laptop, specs: [
+    { label: 'CPU', value: 'Intel Core i7-1365U vPro' },
+    { label: 'Memory', value: '32 GB LPDDR5' },
+    { label: 'Storage', value: '1 TB NVMe SSD' },
+    { label: 'Display', value: '14" 2.8K OLED' },
+    { label: 'GPU', value: 'Intel Iris Xe' },
+    { label: 'OS', value: 'Windows 11 Pro 23H2' },
+    { label: 'Battery', value: '57 Wh · 120 cycles' },
+    { label: 'Ports', value: '2× Thunderbolt 4, 2× USB-A, HDMI' },
+  ] },
+  { id: 'a13', code: 'AST-0013', name: 'Dell OptiPlex 7090', category: 'IT Hardware', type: 'Monitor', status: 'Retired', condition: 'Poor', location: 'Storage - Warehouse', department: 'Operations', assignedTo: null, purchaseDate: '2021-03-15', purchaseCost: 1099, currentValue: 0, warrantyExpiry: '2024-03-15', vendor: 'Dell Technologies', serialNumber: 'DLOP7090X', icon: Monitor, specs: [
+    { label: 'CPU', value: 'Intel Core i5-11400' },
+    { label: 'Memory', value: '16 GB DDR4' },
+    { label: 'Storage', value: '512 GB SATA SSD' },
+    { label: 'Form Factor', value: 'Micro' },
+    { label: 'GPU', value: 'Intel UHD Graphics 730' },
+    { label: 'OS', value: 'Windows 10 Pro (retired)' },
+    { label: 'Ports', value: '4× USB-A, 2× DisplayPort, Ethernet' },
+    { label: 'Condition Notes', value: 'Fan failure, motherboard issues' },
+  ] },
+  { id: 'a14', code: 'AST-0014', name: 'Samsung Galaxy S23', category: 'Mobile', type: 'Smartphone', status: 'Assigned', condition: 'Good', location: 'Branch - Boston', department: 'Sales', assignedTo: 'Olivia Brown', purchaseDate: '2023-12-01', purchaseCost: 799, currentValue: 580, warrantyExpiry: '2025-12-01', vendor: 'Samsung Electronics', serialNumber: 'SGS2311X', icon: Smartphone, specs: [
+    { label: 'Chip', value: 'Snapdragon 8 Gen 2' },
+    { label: 'Memory', value: '8 GB' },
+    { label: 'Storage', value: '128 GB' },
+    { label: 'Display', value: '6.1" Dynamic AMOLED 2X' },
+    { label: 'Camera', value: '50 MP main + 12 MP ultrawide + 10 MP telephoto' },
+    { label: 'Battery', value: '3900 mAh · 198 cycles' },
+    { label: 'OS', value: 'Android 14 / One UI 6.1' },
+    { label: 'Connectivity', value: '5G, Wi-Fi 6E, Bluetooth 5.3' },
+  ] },
+  { id: 'a15', code: 'AST-0015', name: 'Surface Pro 9', category: 'Mobile', type: 'Tablet', status: 'In Maintenance', condition: 'Fair', location: 'HQ - Floor 3', department: 'Design', assignedTo: null, purchaseDate: '2023-07-22', purchaseCost: 1599, currentValue: 980, warrantyExpiry: '2026-07-22', vendor: 'Microsoft', serialNumber: 'SP91599X', icon: Tablet, specs: [
+    { label: 'CPU', value: 'Intel Core i7-1255U' },
+    { label: 'Memory', value: '16 GB LPDDR5' },
+    { label: 'Storage', value: '512 GB SSD' },
+    { label: 'Display', value: '13" PixelSense Flow 120Hz' },
+    { label: 'GPU', value: 'Intel Iris Xe' },
+    { label: 'OS', value: 'Windows 11 Pro 23H2' },
+    { label: 'Battery', value: '47.7 Wh · 340 cycles' },
+    { label: 'Accessories', value: 'Surface Pro Signature Keyboard, Surface Pen' },
+  ] },
 ];
 
 export const employees: Employee[] = [

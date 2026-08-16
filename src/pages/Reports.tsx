@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { FileText, Download, FileSpreadsheet, Calendar, Filter, TrendingUp, TrendingDown, DollarSign, Boxes, Wrench } from 'lucide-react';
+import { FileText, Download, FileSpreadsheet, Calendar, Filter, TrendingUp, TrendingDown, DollarSign, Boxes, Wrench, Sparkles, ArrowUpRight, ArrowDownRight, Lightbulb, ChevronRight } from 'lucide-react';
 import { Card, CardHeader, Button, Badge, Select, Input } from '@/components/ui';
 import { BarChart, DonutChart, LineChart, ProgressBarChart } from '@/components/Charts';
 import { assetLifecycleData, departmentDistribution, assetTypeDistribution, kpis } from '@/data/mockData';
+import { aiExecutiveSummary } from '@/data/aiData';
 import { cn } from '@/lib/cn';
 
 interface ReportsProps {

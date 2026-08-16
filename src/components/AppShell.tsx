@@ -12,10 +12,12 @@ import {
   LogOut,
   User as UserIcon,
   Command,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { navGroups, pageTitles } from '@/config/navigation';
 import { Avatar, Badge, Button, Dropdown, type DropdownItem } from '@/components/ui';
+import { AIAssistantDrawer } from '@/components/AIAssistantDrawer';
 import { notifications as notifData } from '@/data/mockData';
 
 interface AppShellProps {
@@ -30,6 +32,7 @@ export function AppShell({ current, onNavigate, children, breadcrumb }: AppShell
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
 
   const unreadCount = notifData.filter((n) => !n.read).length;
   const meta = pageTitles[current] ?? { title: 'RAISE', subtitle: '' };
@@ -133,6 +136,18 @@ export function AppShell({ current, onNavigate, children, breadcrumb }: AppShell
           </button>
 
           <div className="flex-1" />
+
+          {/* AI Assistant */}
+          <Button
+            variant="outline"
+            size="sm"
+            leftIcon={<Sparkles className="h-4 w-4 text-brand-600" />}
+            onClick={() => setAiOpen(true)}
+            className="border-brand-200 bg-brand-50/50 hover:bg-brand-50 hover:border-brand-300 text-brand-700"
+          >
+            <span className="hidden sm:inline">AI Assistant</span>
+            <span className="sm:hidden">AI</span>
+          </Button>
 
           {/* Quick actions */}
           <Button size="sm" leftIcon={<Plus className="h-4 w-4" />} className="hidden sm:inline-flex" onClick={() => onNavigate('create-asset')}>
@@ -242,6 +257,9 @@ export function AppShell({ current, onNavigate, children, breadcrumb }: AppShell
           </div>
         </div>
       )}
+
+      {/* AI Assistant Drawer */}
+      <AIAssistantDrawer open={aiOpen} onClose={() => setAiOpen(false)} onNavigate={(action) => { setAiOpen(false); onNavigate(action); }} />
     </div>
   );
 }

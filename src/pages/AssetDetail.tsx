@@ -21,9 +21,16 @@ import {
   Package,
   Download,
   Paperclip,
+  Cpu,
+  Sparkles,
+  Activity,
+  AlertTriangle,
+  CheckCircle2,
+  ChevronRight,
 } from 'lucide-react';
 import { Card, CardHeader, Button, Badge, StatusBadge, Avatar, Tabs, EmptyState, Progress, useToast, SectionCard } from '@/components/ui';
 import { assets, employees, maintenanceRecords, softwareLicenses } from '@/data/mockData';
+import { getAssetHealth } from '@/data/aiData';
 import { cn } from '@/lib/cn';
 
 interface AssetDetailProps {
@@ -103,18 +110,105 @@ export function AssetDetail({ assetId, onNavigate }: AssetDetailProps) {
       {/* Tab content */}
       {tab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <SectionCard title="General Information" description="Core asset details" className="lg:col-span-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-              <InfoRow label="Asset Code" value={asset.code} />
-              <InfoRow label="Serial Number" value={asset.serialNumber} />
-              <InfoRow label="Category" value={asset.category} />
-              <InfoRow label="Type" value={asset.type} />
-              <InfoRow label="Vendor" value={asset.vendor} />
-              <InfoRow label="Condition" value={asset.condition} />
-              <InfoRow label="Department" value={asset.department} />
-              <InfoRow label="Location" value={asset.location} />
-            </div>
-          </SectionCard>
+          <div className="lg:col-span-2 flex flex-col gap-4">
+            <SectionCard title="General Information" description="Core asset details">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                <InfoRow label="Asset Code" value={asset.code} />
+                <InfoRow label="Serial Number" value={asset.serialNumber} />
+                <InfoRow label="Category" value={asset.category} />
+                <InfoRow label="Type" value={asset.type} />
+                <InfoRow label="Vendor" value={asset.vendor} />
+                <InfoRow label="Condition" value={asset.condition} />
+                <InfoRow label="Department" value={asset.department} />
+                <InfoRow label="Location" value={asset.location} />
+              </div>
+            </SectionCard>
+
+            {asset.specs && asset.specs.length > 0 && (
+              <SectionCard title="Technical Specifications" description="Hardware and system configuration">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                  {asset.specs.map((spec) => (
+                    <InfoRow key={spec.label} label={spec.label} value={spec.value} />
+                  ))}
+                </div>
+              </SectionCard>
+            )}
+
+            {/* AI Asset Analysis */}
+            {(() => {
+              const health = getAssetHealth(asset.id);
+              const riskConfig = {
+                low: { bg: 'bg-success-50', text: 'text-success-600', border: 'border-success-200', label: 'Low Risk', icon: CheckCircle2 },
+                medium: { bg: 'bg-warning-50', text: 'text-warning-600', border: 'border-warning-200', label: 'Medium Risk', icon: AlertTriangle },
+                high: { bg: 'bg-error-50', text: 'text-error-600', border: 'border-error-200', label: 'High Risk', icon: AlertTriangle },
+              }[health.risk];
+              const RiskIcon = riskConfig.icon;
+              const scoreColor = health.score >= 70 ? 'bg-success-500' : health.score >= 40 ? 'bg-warning-500' : 'bg-error-500';
+              return (
+                <SectionCard title="AI Asset Analysis" description="AI-powered health assessment and recommendations">
+                  <div className="flex flex-col gap-4">
+                    {/* Health Score */}
+                    <div className={cn('flex items-center gap-4 p-4 rounded-lg border', riskConfig.bg, riskConfig.border)}>
+                      <div className="relative h-16 w-16 shrink-0">
+                        <svg className="h-16 w-16 -rotate-90" viewBox="0 0 64 64">
+                          <circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" strokeWidth="4" className="text-surface-200" />
+                          <circle cx="32" cy="32" r="28" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" className={riskConfig.text} strokeDasharray={`${(health.score / 100) * 176} 176`} />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-title font-bold text-surface-900">{health.score}</span>
+                        </div>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <RiskIcon className={cn('h-4 w-4', riskConfig.text)} />
+                          <span className={cn('text-body font-semibold', riskConfig.text)}>{riskConfig.label}</span>
+                        </div>
+                        <p className="text-caption text-surface-600 mt-0.5">Health Score: {health.score}/100</p>
+                        <div className="h-1.5 bg-surface-200 rounded-full overflow-hidden mt-2 max-w-[200px]">
+                          <div className={cn('h-full rounded-full transition-all', scoreColor)} style={{ width: `${health.score}%` }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* AI Findings */}
+                    <div>
+                      <p className="text-caption font-semibold text-surface-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <Sparkles className="h-3.5 w-3.5 text-brand-500" />
+                        AI Detected
+                      </p>
+                      <div className="space-y-2">
+                        {health.findings.map((finding, i) => (
+                          <div key={i} className="flex items-start gap-2 text-body text-surface-700">
+                            <span className="h-1.5 w-1.5 rounded-full bg-surface-300 mt-2 shrink-0" />
+                            {finding}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Recommendation */}
+                    <div className="p-3 rounded-lg bg-brand-50 border border-brand-100">
+                      <p className="text-caption font-medium text-brand-600 mb-1 flex items-center gap-1.5">
+                        <Activity className="h-3.5 w-3.5" />
+                        AI Recommendation
+                      </p>
+                      <p className="text-body text-surface-800">{health.recommendation}</p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" leftIcon={<Sparkles className="h-4 w-4 text-brand-600" />}>
+                        Explain
+                      </Button>
+                      <Button variant="outline" size="sm" leftIcon={<FileText className="h-4 w-4" />}>
+                        View Evidence
+                      </Button>
+                    </div>
+                  </div>
+                </SectionCard>
+              );
+            })()}
+          </div>
 
           <div className="flex flex-col gap-4">
             <SectionCard title="Financial Information">

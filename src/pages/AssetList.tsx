@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Upload, QrCode, Eye, Edit, Trash2, ArrowRightLeft, Wrench, Filter, X } from 'lucide-react';
+import { Plus, Upload, QrCode, Eye, Edit, Trash2, ArrowRightLeft, Wrench, Filter, X, Sparkles, Send, CheckCircle2 } from 'lucide-react';
 import { Button, Badge, StatusBadge, Avatar, Select, Modal, ConfirmDialog, useToast } from '@/components/ui';
 import { DataTable, type Column } from '@/components/DataTable';
 import { assets, type Asset, departments, locations } from '@/data/mockData';
@@ -17,6 +17,69 @@ export function AssetList({ onNavigate }: AssetListProps) {
   const [showFilters, setShowFilters] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Asset | null>(null);
   const [qrAsset, setQrAsset] = useState<Asset | null>(null);
+  const [aiQuery, setAiQuery] = useState('');
+  const [aiActive, setAiActive] = useState(false);
+  const [aiInterpretation, setAiInterpretation] = useState<{ filters: { label: string; value: string }[]; count: number } | null>(null);
+
+  const handleAISearch = () => {
+    if (!aiQuery.trim()) return;
+    const lower = aiQuery.toLowerCase();
+    const filters: { label: string; value: string }[] = [];
+
+    if (lower.includes('laptop') || lower.includes('notebook')) { filters.push({ label: 'Type', value: 'Laptop' }); }
+    if (lower.includes('monitor') || lower.includes('display')) { filters.push({ label: 'Type', value: 'Monitor' }); }
+    if (lower.includes('phone') || lower.includes('smartphone') || lower.includes('mobile')) { filters.push({ label: 'Type', value: 'Smartphone' }); }
+    if (lower.includes('tablet') || lower.includes('ipad')) { filters.push({ label: 'Type', value: 'Tablet' }); }
+    if (lower.includes('server')) { filters.push({ label: 'Type', value: 'Server' }); }
+    if (lower.includes('printer')) { filters.push({ label: 'Type', value: 'Printer' }); }
+    if (lower.includes('router') || lower.includes('switch') || lower.includes('cisco')) { filters.push({ label: 'Type', value: 'Router' }); }
+
+    if (lower.includes('idle') || lower.includes('available')) { filters.push({ label: 'Status', value: 'Available' }); }
+    if (lower.includes('assigned') || lower.includes('in use')) { filters.push({ label: 'Status', value: 'Assigned' }); }
+    if (lower.includes('maintenance') || lower.includes('repair')) { filters.push({ label: 'Status', value: 'In Maintenance' }); }
+    if (lower.includes('retired') || lower.includes('disposed')) { filters.push({ label: 'Status', value: 'Retired' }); }
+
+    if (lower.includes('engineering')) { filters.push({ label: 'Department', value: 'Engineering' }); }
+    if (lower.includes('sales')) { filters.push({ label: 'Department', value: 'Sales' }); }
+    if (lower.includes('design')) { filters.push({ label: 'Department', value: 'Design' }); }
+    if (lower.includes('finance')) { filters.push({ label: 'Department', value: 'Finance' }); }
+    if (lower.includes('operations') || lower.includes('operation')) { filters.push({ label: 'Department', value: 'Operations' }); }
+
+    if (lower.includes('boston')) { filters.push({ label: 'Location', value: 'Branch - Boston' }); }
+    if (lower.includes('austin')) { filters.push({ label: 'Location', value: 'Branch - Austin' }); }
+    if (lower.includes('remote')) { filters.push({ label: 'Location', value: 'Remote' }); }
+    if (lower.includes('storage') || lower.includes('warehouse')) { filters.push({ label: 'Location', value: 'Storage - Warehouse' }); }
+
+    const count = assets.filter((a) => {
+      return filters.every((f) => {
+        if (f.label === 'Type') return a.type === f.value;
+        if (f.label === 'Status') return a.status === f.value;
+        if (f.label === 'Department') return a.department === f.value;
+        if (f.label === 'Location') return a.location === f.value;
+        return true;
+      });
+    }).length;
+
+    setAiInterpretation({ filters, count });
+    setAiActive(true);
+
+    if (filters.some((f) => f.label === 'Status')) {
+      const statusFilter = filters.find((f) => f.label === 'Status');
+      if (statusFilter) setStatusFilter(statusFilter.value);
+    }
+    if (filters.some((f) => f.label === 'Department')) {
+      const deptFilterVal = filters.find((f) => f.label === 'Department');
+      if (deptFilterVal) setDeptFilter(deptFilterVal.value);
+    }
+  };
+
+  const clearAISearch = () => {
+    setAiQuery('');
+    setAiInterpretation(null);
+    setAiActive(false);
+    setStatusFilter('all');
+    setDeptFilter('all');
+  };
 
   const filtered = assets.filter((a) => {
     const matchSearch = a.name.toLowerCase().includes(search.toLowerCase()) || a.code.toLowerCase().includes(search.toLowerCase());
@@ -115,6 +178,60 @@ export function AssetList({ onNavigate }: AssetListProps) {
           </div>
         </div>
       )}
+
+      {/* AI Natural Language Search */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <div className="flex-1 relative">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+              <Sparkles className="h-4 w-4 text-brand-500" />
+            </div>
+            <input
+              value={aiQuery}
+              onChange={(e) => setAiQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleAISearch(); }}
+              placeholder="Ask AI: e.g. 'Show me idle laptops in Engineering'"
+              className="w-full rounded-xl border border-brand-200 bg-brand-50/30 pl-10 pr-4 py-2.5 text-body text-surface-900 placeholder:text-surface-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400 transition-all"
+            />
+          </div>
+          <Button
+            size="sm"
+            leftIcon={<Send className="h-4 w-4" />}
+            onClick={handleAISearch}
+            disabled={!aiQuery.trim()}
+          >
+            Ask AI
+          </Button>
+        </div>
+
+        {aiInterpretation && (
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-brand-50 border border-brand-100 animate-fade-in-up">
+            <div className="h-7 w-7 rounded-md bg-gradient-to-br from-brand-600 to-accent-600 flex items-center justify-center shrink-0">
+              <Sparkles className="h-4 w-4 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-caption font-medium text-brand-700 mb-1">AI interpreted:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {aiInterpretation.filters.length === 0 ? (
+                  <span className="text-caption text-surface-500">No specific filters detected — showing all assets.</span>
+                ) : (
+                  aiInterpretation.filters.map((f, i) => (
+                    <span key={i} className="inline-flex items-center gap-1 text-caption bg-white border border-brand-200 text-brand-700 px-2 py-0.5 rounded-md font-medium">
+                      {f.label} = {f.value}
+                    </span>
+                  ))
+                )}
+              </div>
+              <p className="text-caption text-surface-600 mt-1.5">
+                Found <span className="font-bold text-surface-900">{aiInterpretation.count}</span> matching assets
+              </p>
+            </div>
+            <button onClick={clearAISearch} className="text-surface-400 hover:text-surface-600 transition-colors shrink-0">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+      </div>
 
       <DataTable
         columns={columns}
